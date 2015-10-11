@@ -1,0 +1,6 @@
+[submodule "term"]
+	path = term
+	url = https://github.com/avrjs/term.git
+[submodule "avrjs"]
+	path = avrjs
+	url = https://github.com/avrjs/avrjs.git
