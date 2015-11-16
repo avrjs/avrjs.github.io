@@ -222,7 +222,6 @@ $(function ()
         }
     });
     termdiv.focus();
-    main_resize();
 
     // frequency
     $("#freq").html(window.avrjs.get_frequency().toFixed(2) + " MHz");
