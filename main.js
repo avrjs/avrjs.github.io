@@ -191,7 +191,7 @@ function load_default()
     $(document.body).append(hot_drop);
     hot_drop.load("default.hex", function ()
     {
-        var hex = hot_drop.html();
+	var hex = hot_drop.html();
         var buf = new ArrayBuffer(hex.length);
         var hex_array = new Uint8Array(buf);
         for (var i = 0; i < hex.length; i++)
@@ -201,33 +201,36 @@ function load_default()
         window.avrjs.load(hex_array);
         window.avrjs.set_speed($("#speed_slider").val());
         window.avrjs.run();
-
+	
         $("#btn_run").css("display", "inline");
         $("#btn_load").css("display", "inline");
     });
 }
 
-$(function ()
+$(function()
 {
     // avr
     window.avrjs = avrjs();
 
     // terminal
-    var termdiv = $("#u0_term");
-    window.u0_term = term(termdiv, $(window).width(), $(window).height() - ($("#nav_bar").outerHeight() + $("#footer").outerHeight()), 10, function (value)
-    {
+    var term_div = $("#u0_term");
+    var nav_div = $("#nav_bar");
+    var foot_div = $("#footer");
+    window.u0_term = term(term_div, $(window).width(), $(window).height() - (nav_div.outerHeight() + foot_div.outerHeight()), 10, function (value)
+    { // keypress
         if (window.avrjs.is_running() === true)
         {
             window.avrjs.uart0_write(value);
         }
     });
-    termdiv.focus();
+    term_div.focus();
 
     // frequency
-    $("#freq").html(window.avrjs.get_frequency().toFixed(2) + " MHz");
+    var freq_div = $("#freq");
+    freq_div.html(window.avrjs.get_frequency().toFixed(2) + " MHz");
     interval = setInterval(function () // function called every 2s
     {
-        $("#freq").html(window.avrjs.get_frequency().toFixed(2) + " MHz");
+        freq_div.html(window.avrjs.get_frequency().toFixed(2) + " MHz");
     }, 2000);
 
     // load defaults only once

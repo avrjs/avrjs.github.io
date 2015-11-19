@@ -1,25 +1,25 @@
 <!DOCTYPE html>
+<HTML>
 <head>
   <meta charset="UTF-8">
   <title>AVRjs</title>
   <meta name="description" content="AVRjs - A JavaScript AVR simulator"/>
-  <link rel="stylesheet" href="fonts/j-regular.css" type="text/css" charset="utf-8" />
-  <link rel="stylesheet" href="css/main.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="fonts/j-regular.css" type="text/css"/>
+  <link rel="stylesheet" href="css/main.css" type="text/css"/>
 </head>
 <body style="margin:0; padding:0; height:100%; overflow:hidden;">
-<div id="contenteditable" contenteditable style="display:none"></div>
-<div id="nav_bar" style="width:100%; background-color:#92b4d8; font-family:j-book; font-size:50px;">
+<div id="nav_bar" style="width:100%; overflow:auto; height:60px; background-color:#92b4d8; font-family:j-book; font-size:50px;">
     <div id="logo" style="color:#E4E4E4; float:left; margin-left:24px; margin-right:50px; -moz-user-select:none; -khtml-user-select:none; -webkit-user-select:none; -o-user-select:none;">AVRjs</div>
     <input type="file" id="bin_file"/>
-    <select id="device_select">
-      <option value="atmega128">ATmega128</option>
+    <select id="device_select" tabindex="2">
+      <option value="atmega128" selected>ATmega128</option>
       <option value="attiny1634">ATtiny1634</option>
     </select>
     <input type="button" id="btn_load" value="Load" onclick="load();" style="display:none;">
     <input type="button" id="btn_run" value="Stop" onclick="run_stop();" style="display:none;">
 
-    <div id="freq" style='width:150px; color:#E4E4E4; font-size:20px; float:right; margin-left:20px; margin-top:20px;'></div>
-    <input id="speed_slider" type="range" onchange="set_speed(this.value)" style="width:200px; float:right; margin-top:25px;"/>
+    <div id="freq" style="width:150px; color:#E4E4E4; font-size:20px; float:right; margin-left:20px; margin-top:20px;"></div>
+    <input id="speed_slider" type="range" onchange="set_speed(this.value)" style="width:160px; float:right; margin-top:25px;"/>
 </div>
 <div id="u0_term" style="outline:none;"></div>
 
@@ -39,3 +39,4 @@
 <script src="main.js"></script>
 <script src="swavr.js"></script>
 </body>
+</HTML>
