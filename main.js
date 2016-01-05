@@ -1,18 +1,18 @@
 /*
  main.js - An Atmel (TM) AVR (TM) simulator
- 
+
  Copyright (C) 2015  Julian Ingram
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -46,7 +46,7 @@ function avrjs()
                     for (var i = 0; i < 10; ++i)
                     {
                         //var pc = avr.get_pc() * 2; // * 2 to line up with the values shown in the lss files
-                        //console.log(pc.toString(16) + " " + avr.get_instruction_name());
+                        //console.log("    " + pc.toString(16) + " " + avr.get_instruction_name());
                         avr.tick();
                     }
                     tick_counter += 10;
@@ -122,7 +122,7 @@ function avrjs()
             }
             avr.destroy();
         }
-        avr = types[avr_type](uart0_cb);
+        avr = types[avr_type](uart0_cb, 0);
     }
 
     return {
@@ -201,7 +201,7 @@ function load_default()
         window.avrjs.load(hex_array);
         window.avrjs.set_speed($("#speed_slider").val());
         window.avrjs.run();
-	
+
         $("#btn_run").css("display", "inline");
         $("#btn_load").css("display", "inline");
     });
