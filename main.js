@@ -24,7 +24,8 @@ function avrjs()
     var avr = undefined;
     var tick_counter = 0;
     var measure_interval;
-    var asleep = 0;
+    var asleep = false;
+    var running = false;
 
     function uart0_write(c)
     {
@@ -43,7 +44,7 @@ function avrjs()
             {
                 //var pc = avr.get_pc() * 2; // * 2 to line up with the values shown in the lss files
                 //console.log("    " + pc.toString(16) + " " + avr.get_instruction_name());
-                if (asleep == 0)
+                if (asleep == false)
                 {
                     avr.tick();
                     tick_counter ++;
@@ -60,21 +61,23 @@ function avrjs()
             {
                 clearInterval(interval);
                 interval = undefined;
-                asleep = 1;
+                asleep = true;
             }
         }
         else
         {
-            if (interval === undefined)
+            if ((running == true) && (interval === undefined))
             {
                 interval = setInterval(tick, 10);
-                asleep = 0;
+                asleep = false;
             }
         }
     }
 
     function run()
     {
+        running = true;
+        asleep = false;
         if (interval === undefined)
         {
             interval = setInterval(tick, 10);
@@ -88,6 +91,8 @@ function avrjs()
 
     function stop()
     {
+        running = false;
+        asleep = false;
         if (interval !== undefined)
         {
             clearInterval(interval);
@@ -100,7 +105,7 @@ function avrjs()
 
     function is_running()
     {
-        return ((interval === undefined) && (asleep === 0)) ? false : true;
+        return running;
     }
 
     function get_frequency()
