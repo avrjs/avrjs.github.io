@@ -21,10 +21,10 @@ function avrjs()
 {
     var interval = undefined;
     var frequency = 0;
-    var speed = 0;
     var avr = undefined;
     var tick_counter = 0;
     var measure_interval;
+    var asleep = 0;
 
     function uart0_write(c)
     {
@@ -34,35 +34,56 @@ function avrjs()
         }
     }
 
+    function tick() // function called every 10ms
+    {
+        var ts = performance.now();
+        while ((performance.now() - ts) < 9)
+        {
+            for (var i = 0; i < 10; ++i)
+            {
+                //var pc = avr.get_pc() * 2; // * 2 to line up with the values shown in the lss files
+                //console.log("    " + pc.toString(16) + " " + avr.get_instruction_name());
+                if (asleep == 0)
+                {
+                    avr.tick();
+                    tick_counter ++;
+                }
+            }
+        }
+    }
+
+    function sleep_cb(s)
+    {
+        if (s != 0)
+        {
+            if (interval !== undefined)
+            {
+                clearInterval(interval);
+                interval = undefined;
+                asleep = 1;
+            }
+        }
+        else
+        {
+            if (interval === undefined)
+            {
+                interval = setInterval(tick, 10);
+                asleep = 0;
+            }
+        }
+    }
+
     function run()
     {
         if (interval === undefined)
         {
-            interval = setInterval(function () // function called every 10ms
-            {
-                var ts = performance.now();
-                while ((performance.now() - ts) < speed)
-                {
-                    for (var i = 0; i < 10; ++i)
-                    {
-                        //var pc = avr.get_pc() * 2; // * 2 to line up with the values shown in the lss files
-                        //console.log("    " + pc.toString(16) + " " + avr.get_instruction_name());
-                        avr.tick();
-                    }
-                    tick_counter += 10;
-                }
-            }, 10);
+            interval = setInterval(tick, 10);
             measure_interval = setInterval(function () // function called every second
             {
                 frequency = (tick_counter / 1000000);
                 tick_counter = 0;
             }, 1000);
         }
-    }
-
-    function set_speed(speed_percent)
-    {
-        speed = (speed_percent / 100) * 9;
     }
 
     function stop()
@@ -79,7 +100,7 @@ function avrjs()
 
     function is_running()
     {
-        return (interval !== undefined) ? true : false;
+        return ((interval === undefined) && (asleep === 0)) ? false : true;
     }
 
     function get_frequency()
@@ -122,13 +143,12 @@ function avrjs()
             }
             avr.destroy();
         }
-        avr = types[avr_type](uart0_cb, 0);
+        avr = types[avr_type](uart0_cb, sleep_cb);
     }
 
     return {
         uart0_write: uart0_write,
         run: run,
-        set_speed: set_speed,
         stop: stop,
         is_running: is_running,
         load: load,
@@ -165,11 +185,6 @@ function load()
     window.avrjs.load_file(document.getElementById("bin_file"));
 }
 
-function set_speed(speed)
-{
-    window.avrjs.set_speed(speed);
-}
-
 function main_resize()
 {
     window.u0_term.resize($(window).width(), $(window).height() - ($("#nav_bar").outerHeight() + $("#footer").outerHeight()));
@@ -199,7 +214,6 @@ function load_default()
             hex_array[i] = hex.charCodeAt(i);
         }
         window.avrjs.load(hex_array);
-        window.avrjs.set_speed($("#speed_slider").val());
         window.avrjs.run();
 
         $("#btn_run").css("display", "inline");
