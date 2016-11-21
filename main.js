@@ -138,6 +138,7 @@ function avrjs()
     {
         var types = {
             "atmega128": atmega128,
+            "atmega328": atmega328,
             "attiny1634": attiny1634
         };
         if (avr !== undefined)
