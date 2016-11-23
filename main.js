@@ -26,6 +26,7 @@ function avrjs()
     var measure_interval;
     var asleep = false;
     var running = false;
+    var extern_sleep_cb = undefined;
 
     function uart0_write(c)
     {
@@ -72,6 +73,10 @@ function avrjs()
                 asleep = false;
             }
         }
+        if (extern_sleep_cb !== undefined)
+        {
+            extern_sleep_cb(s);
+        }
     }
 
     function run()
@@ -108,6 +113,11 @@ function avrjs()
         return running;
     }
 
+    function is_asleep()
+    {
+        return asleep;
+    }
+
     function get_frequency()
     {
         return frequency;
@@ -134,7 +144,7 @@ function avrjs()
         return false;
     }
 
-    function init(avr_type, uart0_cb)
+    function init(avr_type, uart0_cb, _extern_sleep_cb)
     {
         var types = {
             "atmega128": atmega128,
@@ -150,6 +160,7 @@ function avrjs()
             avr.destroy();
         }
         avr = types[avr_type](uart0_cb, sleep_cb);
+        extern_sleep_cb = _extern_sleep_cb;
     }
 
     return {
@@ -157,10 +168,11 @@ function avrjs()
         run: run,
         stop: stop,
         is_running: is_running,
+        is_asleep: is_asleep,
+        get_frequency: get_frequency,
         load: load,
         load_file: load_file,
-        init: init,
-        get_frequency: get_frequency
+        init: init
     };
 }
 
@@ -170,12 +182,31 @@ function run_stop()
     {
         $("#btn_run").prop("value", "Run");
         window.avrjs.stop();
-        $("#freq").html(window.avrjs.get_frequency().toFixed(2) + " MHz");
+        $("#freq").html("Stopped");
     }
     else
     {
         $("#btn_run").prop("value", "Stop");
         window.avrjs.run();
+        if (window.avrjs.is_asleep() === true)
+        {
+            $("#freq").html("Asleep");
+        }
+        else
+        {
+            $("#freq").html(window.avrjs.get_frequency().toFixed(2) + " MHz");
+        }
+    }
+}
+
+function disp_sleep_cb(s)
+{
+    if (s != 0)
+    { // sleep
+        $("#freq").html("Asleep");
+    }
+    else
+    { // wake
         $("#freq").html(window.avrjs.get_frequency().toFixed(2) + " MHz");
     }
 }
@@ -184,7 +215,7 @@ function run_stop()
 
 function load()
 {
-    window.avrjs.init($("#device_select").val(), window.u0_term.write);
+    window.avrjs.init($("#device_select").val(), window.u0_term.write, disp_sleep_cb);
     $("#btn_run").prop("value", "Run");
     window.u0_term.clear();
     $("#freq").html(window.avrjs.get_frequency().toFixed(2) + " MHz");
@@ -205,7 +236,7 @@ function load_default()
 {
     window.defaults_loaded = 1;
     // loading avr
-    window.avrjs.init("atmega128", window.u0_term.write);
+    window.avrjs.init("atmega128", window.u0_term.write, disp_sleep_cb);
 
     // loading hex
     var hot_drop = $("<div style='display:none;'></div>");
@@ -250,7 +281,18 @@ $(function()
     freq_div.html(window.avrjs.get_frequency().toFixed(2) + " MHz");
     interval = setInterval(function () // function called every 2s
     {
-        freq_div.html(window.avrjs.get_frequency().toFixed(2) + " MHz");
+        if (window.avrjs.is_running() === false)
+        {
+            freq_div.html("Stopped");
+        }
+        else if (window.avrjs.is_asleep() === true)
+        {
+            freq_div.html("Asleep");
+        }
+        else
+        {
+            freq_div.html(window.avrjs.get_frequency().toFixed(2) + " MHz");
+        }
     }, 2000);
 
     // load defaults only once
