@@ -12,21 +12,12 @@
     <div id="logo">AVRjs</div>
     <div id="nav">
         <input type="file" id="bin_file"/>
-        BOOTSZ
-        <select id="bootsz" tabindex="3">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3" selected>3</option>
-        </select>
-        BOOTRST
-        <input type="checkbox" id="bootrst" value="bootrst" checked>
         <input type="button" id="btn_load" value="Load" onclick="load();" style="display:none;">
         <input type="button" id="btn_run" value="Stop" onclick="run_stop();" style="display:none;">
         <select onChange="window.location.href=this.value">
-            <option value="attiny1634.html">ATtiny1634</option>
+            <option value="attiny1634.html selected">ATtiny1634</option>
             <option value="atmega328.html">ATmega328</option>
-            <option value="atmega128.html" selected>ATmega128</option>
+            <option value="atmega128.html">ATmega128</option>
         </select>
     </div>
 
@@ -42,7 +33,7 @@
     &#169; 2015-2017
 </div>
 
-<script src="avrjs/atmega128.js"></script>
+<script src="avrjs/attiny1634.js"></script>
 <script src="ihex.js"></script>
 <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="term/term.js"></script>
