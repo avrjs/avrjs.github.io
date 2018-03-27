@@ -72,7 +72,9 @@ function load()
 
 function main_resize()
 {
-    window.u0_term.resize($(window).width(), $(window).height() - ($("#nav_bar").outerHeight() + $("#footer").outerHeight()));
+    var term_div = document.getElementById("u0_term");
+    term_div.style.height = ($(window).height() - ($("#nav_bar").outerHeight() + $("#footer").outerHeight()) - 12) + "px";
+    window.u0_term.reflow();
 }
 
 $(window).resize(function ()
@@ -80,23 +82,34 @@ $(window).resize(function ()
     main_resize();
 });
 
+const TERM_CONFIG = {
+    "width": "calc(100% - 12px)",
+    "height": "",
+    "font-size": "0.9rem",
+    "padding": "6px",
+    "tabindex": 0
+}
+
 $(function()
 {
     // avr
     window.avrjs = avrjs();
 
     // terminal
-    var term_div = $("#u0_term");
+    var term_div = document.getElementById("u0_term");
     var nav_div = $("#nav_bar");
     var foot_div = $("#footer");
-    window.u0_term = term(term_div, $(window).width(), $(window).height() - (nav_div.outerHeight() + foot_div.outerHeight()), 10, function (value)
+    window.u0_term = term(term_div, function (value)
     { // keypress
         if (window.avrjs.is_running() === true)
         {
             window.avrjs.uart0_write(value);
         }
     });
+    window.u0_term.config(TERM_CONFIG);
     term_div.focus();
+
+    main_resize();
 
     // frequency
     var freq_div = $("#freq");
