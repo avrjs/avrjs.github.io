@@ -38,7 +38,12 @@ body {
 }
 
 #u0_term {
+    background-color: #222222;
+    color: #cccccc;
     outline: none;
+    width": calc(100% - 12px);
+    font-size: 0.9rem;
+    padding: 6px;
 }
 
 #footer {

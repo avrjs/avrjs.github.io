@@ -82,13 +82,7 @@ $(window).resize(function ()
     main_resize();
 });
 
-const TERM_CONFIG = {
-    "width": "calc(100% - 12px)",
-    "height": "",
-    "font-size": "0.9rem",
-    "padding": "6px",
-    "tabindex": 0
-}
+const TERM_CONFIG = {};
 
 $(function()
 {
